@@ -110,6 +110,8 @@ export default function NewsPage() {
                 <motion.img
                   src={featured.image}
                   alt={featured.title}
+                  loading="lazy"
+                  decoding="async"
                   initial={{ scale: 1.05 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 1.1, ease: 'easeOut' }}
@@ -159,6 +161,8 @@ export default function NewsPage() {
                   <img
                     src={article.image}
                     alt={article.title}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />

@@ -31,6 +31,8 @@ export default function DestinationCard({
         <motion.img
           src={destination.image}
           alt={destination.name}
+          loading="lazy"
+          decoding="async"
           initial={false}
           animate={{ scale: 1 }}
           whileHover={{}}

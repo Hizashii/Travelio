@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
@@ -6,24 +6,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CurrencyProvider } from './contexts/CurrencyContext'
 import Header from './components/Header'
 import HomePage from './components/HomePage'
-import NewsPage from './components/NewsPage'
-import ContactPage from './components/ContactPage'
-import DestinationsSection from './components/DestinationsSection'
-import FlightSearch from './components/FlightSearch'
-import FAQ from './components/FAQ'
-import Footer from './components/Footer'
-import FlightList from './components/FlightList'
-import BookingForm from './components/BookingForm'
-import Payment from './components/Payment'
-import Confirmation from './components/Confirmation'
-import AdminDashboard from './components/AdminDashboard'
-import AdminLogin from './components/AdminLogin'
 import LoadingScreen from './components/LoadingScreen'
-import SimpleContentPage from './components/SimpleContentPage'
 import { generateFlights } from './data/flights'
 import { Destination, Flight, SearchParams, Passenger } from './types'
 import { useDestinations } from './hooks/useDestinations'
 import { isAdminAuthenticated } from './services/auth'
+
+const NewsPage = lazy(() => import('./components/NewsPage'))
+const ContactPage = lazy(() => import('./components/ContactPage'))
+const DestinationsSection = lazy(() => import('./components/DestinationsSection'))
+const FlightSearch = lazy(() => import('./components/FlightSearch'))
+const FAQ = lazy(() => import('./components/FAQ'))
+const Footer = lazy(() => import('./components/Footer'))
+const FlightList = lazy(() => import('./components/FlightList'))
+const BookingForm = lazy(() => import('./components/BookingForm'))
+const Payment = lazy(() => import('./components/Payment'))
+const Confirmation = lazy(() => import('./components/Confirmation'))
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'))
+const AdminLogin = lazy(() => import('./components/AdminLogin'))
+const SimpleContentPage = lazy(() => import('./components/SimpleContentPage'))
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -214,6 +215,15 @@ const staticPages: Record<StaticPage, { title: string; intro: string; sections: 
   },
 }
 
+const PageFallback = (
+  <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div className="h-10 w-10 rounded-full border-2 border-white/30 border-t-sky-400 animate-spin" />
+      <p className="text-sm text-slate-300">Loading…</p>
+    </div>
+  </div>
+)
+
 function App() {
   const { destinations, loading: destinationsLoading, refetch: refetchDestinations } = useDestinations()
   
@@ -270,7 +280,10 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // Lenis smooth scroll
+    if (currentPage !== 'home') {
+      return
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -282,21 +295,21 @@ function App() {
       infinite: false,
     })
 
-    // Sync ScrollTrigger with Lenis
+    const raf = (time: number) => lenis.raf(time * 1000)
+
     lenis.on('scroll', ScrollTrigger.update)
-    gsap.ticker.add((time) => lenis.raf(time * 1000))
+    gsap.ticker.add(raf)
     gsap.ticker.lagSmoothing(0)
 
-    // Refresh ScrollTrigger after images/fonts fully load
     const onLoad = () => ScrollTrigger.refresh()
     window.addEventListener('load', onLoad)
 
     return () => {
       window.removeEventListener('load', onLoad)
-      gsap.ticker.remove((time) => lenis.raf(time * 1000))
+      gsap.ticker.remove(raf)
       lenis.destroy()
     }
-  }, [])
+  }, [currentPage])
 
   const handleNavigate = (page: Page) => {
     // Check authentication for admin route
@@ -540,17 +553,19 @@ function App() {
       )}
         
         {!isLoading && (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPage}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {renderPage()}
-            </motion.div>
-          </AnimatePresence>
+          <Suspense fallback={PageFallback}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPage}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {renderPage()}
+              </motion.div>
+            </AnimatePresence>
+          </Suspense>
         )}
       </div>
     </CurrencyProvider>

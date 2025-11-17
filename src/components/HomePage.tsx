@@ -185,6 +185,8 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                       <img
                         src={heroDestinations[activeSlide].image}
                         alt={heroDestinations[activeSlide].title}
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover"
                       />
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -253,6 +255,8 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                           <img
                             src={dest.image}
                             alt={dest.title}
+                            loading="lazy"
+                            decoding="async"
                             className="h-full w-full object-cover"
                           />
                           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
