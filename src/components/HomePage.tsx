@@ -11,7 +11,7 @@ const featuredCountry = {
   name: 'THAILAND',
   subtitle: 'Discover temples, turquoise waters and vibrant night markets.',
   description:
-    'Thailand is a Southeast Asian country known for its tropical beaches, opulent royal palaces, ancient ruins and ornate temples. Explore Bangkok’s energy, the calm of Chiang Mai, or the islands of Phuket and Krabi.',
+    'Thailand is a Southeast Asian country known for its tropical beaches, opulent royal palaces, ancient ruins and ornate temples. Explore Bangkoks energy, the calm of Chiang Mai, or the islands of Phuket and Krabi.',
 }
 
 const heroDestinations = [
@@ -71,58 +71,58 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/10" />
       </div>
 
-{/* Left vertical line with numbered circles - hidden on mobile */}
-<div className="hidden md:flex absolute left-4 lg:left-6 top-1/2 z-30 -translate-y-1/2 flex-col items-center">
-  <div className="relative h-64 w-6 flex items-stretch">
-    {/* Line */}
-    <div className="relative mx-auto h-full w-[3px] rounded-full bg-white/18 overflow-hidden backdrop-blur-sm">
-      {/* Active segment */}
-      <motion.div
-        className="absolute left-0 right-0 rounded-full bg-sky-400 shadow-[0_0_14px_rgba(56,189,248,0.9)]"
-        initial={false}
-        animate={{
-          top:
-            totalSlides > 1
-              ? `${(activeSlide / (totalSlides - 1)) * 100}%`
-              : '0%',
-          height: `${100 / totalSlides}%`,
-        }}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
-      />
-    </div>
-
-    {/* Numbered circles */}
-    <div className="pointer-events-none absolute inset-0 flex flex-col justify-between py-1">
-      {Array.from({ length: totalSlides }).map((_, idx) => {
-        const isActive = idx === activeSlide
-        return (
-          <div key={idx} className="flex justify-center">
-            <motion.button
-              type="button"
-              onClick={() => setActiveSlide(idx)}
-              className="pointer-events-auto"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-            >
-              <span
-                className={[
-                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold',
-                  'border transition-all duration-300 backdrop-blur-sm',
-                  isActive
-                    ? 'border-sky-400 bg-sky-400/90 text-slate-950 shadow-[0_0_18px_rgba(56,189,248,0.9)]'
-                    : 'border-white/30 bg-black/30 text-white/60 hover:border-white/60 hover:text-white',
-                ].join(' ')}
-              >
-                {idx + 1}
-              </span>
-            </motion.button>
+      {/* Left vertical line with numbered circles - hidden on mobile */}
+      <div className="hidden md:flex absolute left-4 lg:left-6 top-1/2 z-30 -translate-y-1/2 flex-col items-center">
+        <div className="relative h-64 w-6 flex items-stretch">
+          {/* Line */}
+          <div className="relative mx-auto h-full w-[3px] rounded-full bg-white/18 overflow-hidden backdrop-blur-sm">
+            {/* Active segment */}
+            <motion.div
+              className="absolute left-0 right-0 rounded-full bg-sky-400 shadow-[0_0_14px_rgba(56,189,248,0.9)]"
+              initial={false}
+              animate={{
+                top:
+                  totalSlides > 1
+                    ? `${(activeSlide / (totalSlides - 1)) * 100}%`
+                    : '0%',
+                height: `${100 / totalSlides}%`,
+              }}
+              transition={{ duration: 0.45, ease: 'easeOut' }}
+            />
           </div>
-        )
-      })}
-    </div>
-  </div>
-</div>
+
+          {/* Numbered circles */}
+          <div className="pointer-events-none absolute inset-0 flex flex-col justify-between py-1">
+            {Array.from({ length: totalSlides }).map((_, idx) => {
+              const isActive = idx === activeSlide
+              return (
+                <div key={idx} className="flex justify-center">
+                  <motion.button
+                    type="button"
+                    onClick={() => setActiveSlide(idx)}
+                    className="pointer-events-auto"
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+                  >
+                    <span
+                      className={[
+                        'flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold',
+                        'border transition-all duration-300 backdrop-blur-sm',
+                        isActive
+                          ? 'border-sky-400 bg-sky-400/90 text-slate-950 shadow-[0_0_18px_rgba(56,189,248,0.9)]'
+                          : 'border-white/30 bg-black/30 text-white/60 hover:border-white/60 hover:text-white',
+                      ].join(' ')}
+                    >
+                      {idx + 1}
+                    </span>
+                  </motion.button>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
 
       {/* Main hero content */}
       <div className="relative z-10 min-h-screen">
@@ -163,68 +163,51 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </div>
             </motion.div>
 
-            {/* Right: infinite horizontal carousel – active + all to the right */}
+            {/* Right: carousel - auto-switch on mobile, interactive on desktop */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
               className="flex-1 flex justify-center lg:justify-end mt-8 lg:mt-0"
             >
-              <div className="relative h-[16rem] sm:h-[18rem] md:h-[20rem] lg:h-[24rem] w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
-                {heroDestinations.map((_, slotIndex) => {
-                  const itemIndex = (activeSlide + slotIndex) % totalSlides
-                  const dest = heroDestinations[itemIndex]
-                  const isActive = slotIndex === 0
-                  // Responsive spacing: smaller on mobile, larger on desktop
-                  const baseX = slotIndex * 180 // Will be adjusted via CSS media queries if needed
-                  const scale = isActive ? 1.05 : 0.9
-                  const opacity = isActive ? 1 : 0.45
-                  const zIndex = isActive ? 40 : 30 - slotIndex
-
-                  return (
-                    <motion.div
-                      key={dest.id}
-                      initial={false}
-                      animate={{ x: baseX, scale, opacity, zIndex }}
-                      transition={{ duration: 0.5, ease: 'easeOut' }}
-                      onClick={() => setActiveSlide(itemIndex)}
-                      className="absolute top-0 right-0 h-full w-56 sm:w-64 md:w-72 lg:w-80 cursor-pointer overflow-hidden rounded-2xl md:rounded-3xl bg-white/10 shadow-xl backdrop-blur-md"
-                      style={{
-                        boxShadow: isActive
-                          ? '0 24px 40px rgba(0,0,0,0.45)'
-                          : '0 18px 30px rgba(0,0,0,0.35)',
-                      }}
-                    >
-                      <div className="relative h-full w-full">
-                        <img
-                          src={dest.image}
-                          alt={dest.title}
-                          className="h-full w-full object-cover"
-                        />
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                        <div className="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 flex items-center justify-between">
-                          <div>
-                            <p className="text-[9px] md:text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-100/90">
-                              {dest.location}
-                            </p>
-                            <h3 className="mt-1 text-xs sm:text-sm md:text-base font-semibold">
-                              {dest.title}
-                            </h3>
-                          </div>
-                        </div>
+              {/* Mobile: Single centered card with auto-switching */}
+              <div className="md:hidden relative h-[20rem] w-full max-w-xs">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeSlide}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute inset-0 overflow-hidden rounded-2xl bg-white/10 shadow-2xl backdrop-blur-md"
+                  >
+                    <div className="relative h-full w-full">
+                      <img
+                        src={heroDestinations[activeSlide].image}
+                        alt={heroDestinations[activeSlide].title}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-100/90">
+                          {heroDestinations[activeSlide].location}
+                        </p>
+                        <h3 className="mt-1 text-base font-semibold">
+                          {heroDestinations[activeSlide].title}
+                        </h3>
                       </div>
-                    </motion.div>
-                  )
-                })}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
 
-                {/* Arrows, 10% under carousel */}
-                <div className="absolute left-1/2 top-[110%] flex -translate-x-1/2 items-center gap-3 text-xs text-white/85">
+                {/* Mobile arrows */}
+                <div className="absolute left-1/2 top-[105%] flex -translate-x-1/2 items-center gap-3">
                   <motion.button
                     type="button"
                     onClick={goPrev}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full border border-white/40 bg-black/25 text-white/90 backdrop-blur-sm hover:bg-black/40"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-black/30 text-lg text-white/90 backdrop-blur-sm"
                   >
                     ‹
                   </motion.button>
@@ -233,7 +216,77 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                     onClick={goNext}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full border border-white/40 bg-black/25 text-white/90 backdrop-blur-sm hover:bg-black/40"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-black/30 text-lg text-white/90 backdrop-blur-sm"
+                  >
+                    ›
+                  </motion.button>
+                </div>
+              </div>
+
+              {/* Desktop/Tablet: Stacked carousel */}
+              <div className="hidden md:block relative h-[26rem] lg:h-[30rem] xl:h-[34rem] w-full max-w-lg lg:max-w-xl xl:max-w-2xl">
+                <div className="relative h-full w-full flex items-center justify-end">
+                  {heroDestinations.map((_, slotIndex) => {
+                    const itemIndex = (activeSlide + slotIndex) % totalSlides
+                    const dest = heroDestinations[itemIndex]
+                    const isActive = slotIndex === 0
+                    const baseX = slotIndex * 280
+                    const scale = isActive ? 1 : 0.85
+                    const opacity = isActive ? 1 : 0.35
+                    const zIndex = isActive ? 40 : 30 - slotIndex
+
+                    return (
+                      <motion.div
+                        key={dest.id}
+                        initial={false}
+                        animate={{ x: baseX, scale, opacity, zIndex }}
+                        transition={{ duration: 0.5, ease: 'easeOut' }}
+                        onClick={() => setActiveSlide(itemIndex)}
+                        className="absolute top-1/2 right-0 -translate-y-1/2 h-[24rem] lg:h-[28rem] xl:h-[32rem] w-80 lg:w-[22rem] xl:w-96 cursor-pointer overflow-hidden rounded-3xl bg-white/10 shadow-2xl backdrop-blur-md"
+                        style={{
+                          boxShadow: isActive
+                            ? '0 28px 56px rgba(0,0,0,0.55)'
+                            : '0 20px 36px rgba(0,0,0,0.35)',
+                        }}
+                      >
+                        <div className="relative h-full w-full">
+                          <img
+                            src={dest.image}
+                            alt={dest.title}
+                            className="h-full w-full object-cover"
+                          />
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                          <div className="absolute bottom-5 left-5 right-5 lg:bottom-6 lg:left-6 lg:right-6">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-100/90">
+                              {dest.location}
+                            </p>
+                            <h3 className="mt-1 text-lg lg:text-xl font-semibold">
+                              {dest.title}
+                            </h3>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+
+                {/* Desktop arrows */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-[105%] flex items-center gap-3">
+                  <motion.button
+                    type="button"
+                    onClick={goPrev}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/30 text-lg text-white/90 backdrop-blur-sm hover:bg-black/40"
+                  >
+                    ‹
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    onClick={goNext}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/30 text-lg text-white/90 backdrop-blur-sm hover:bg-black/40"
                   >
                     ›
                   </motion.button>

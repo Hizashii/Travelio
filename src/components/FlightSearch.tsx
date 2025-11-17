@@ -42,7 +42,7 @@ export default function FlightSearch({ onSearch, initialParams }: FlightSearchPr
   const minReturnDate = departureDate || minDate
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center py-12 sm:py-16 md:py-20">
+    <div className="min-h-screen bg-slate-950 text-white pt-28 sm:pt-32 pb-12 sm:pb-16">
       {/* Search form */}
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
         <motion.div

@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import Footer from './Footer'
 
 type Article = {
   id: number
@@ -60,17 +61,16 @@ export default function NewsPage() {
   const others = articles.filter((a) => !a.featured)
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="relative min-h-screen bg-slate-950 text-white overflow-hidden">
       {/* Subtle gradient background */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
 
-      <main className="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-10 md:px-8 md:py-14">
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <main className="flex-1 container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pt-28 sm:pt-32 pb-12 sm:pb-16 md:pb-20 space-y-10 md:space-y-14">
         {/* Section header */}
-        <header className="mb-8 sm:mb-10 md:mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
-              Travel news & stories
-            </p>
+           
             <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
               Latest from around the world
             </h1>
@@ -97,7 +97,7 @@ export default function NewsPage() {
         </header>
 
         {/* Featured + list layout */}
-        <div className="grid gap-6 sm:gap-8 md:gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:items-start">
+        <div className="grid gap-10 sm:gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:items-start">
           {/* Featured article */}
           {featured && (
             <motion.article
@@ -146,14 +146,14 @@ export default function NewsPage() {
           )}
 
           {/* Other articles */}
-          <section className="space-y-4 md:space-y-5">
+          <section className="space-y-5 sm:space-y-6">
             {others.map((article, index) => (
               <motion.article
                 key={article.id}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 + index * 0.08, duration: 0.4, ease: 'easeOut' }}
-                className="group flex gap-4 overflow-hidden rounded-2xl border border-white/8 bg-slate-900/70 p-3 shadow-lg backdrop-blur-md hover:border-sky-500/60"
+                className="group flex gap-4 overflow-hidden rounded-2xl border border-white/8 bg-slate-900/70 p-4 sm:p-5 shadow-lg backdrop-blur-md hover:border-sky-500/60"
               >
                 <div className="relative h-24 w-28 flex-shrink-0 overflow-hidden rounded-xl md:h-24 md:w-32">
                   <img
@@ -189,7 +189,9 @@ export default function NewsPage() {
             ))}
           </section>
         </div>
-      </main>
+        </main>
+        <Footer />
+      </div>
     </div>
   )
 }

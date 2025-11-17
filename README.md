@@ -39,6 +39,34 @@ npm run build
 npm run preview
 ```
 
+## Supabase Configuration
+
+- Create a `.env` in the project root and define at least:
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_ANON_KEY`
+  - `VITE_SUPABASE_STORAGE_BUCKET` (defaults to `destination-images` if omitted)
+- Run the SQL in `supabase_setup.sql` to create the `destinations` table and in `supabase_admin_setup.sql` for admin accounts.
+- Create a Supabase Storage bucket (e.g., `destination-images`), mark it as **public**, and grant `storage.objects` insert/read policies for your service role.
+- The admin dashboard can now upload images directly from the browser; uploaded files are stored in the bucket and their public URLs are saved to the `destinations` table automatically.
+
+## Bulk destination uploader
+
+Need to add all the destinations from `public/bulk` at once? Use the helper script:
+
+1. Place the JPGs you want to upload inside `public/bulk/` (already populated with European cities).
+2. Set the required environment variables (service-role key must stay out of version control):
+   ```powershell
+   set VITE_SUPABASE_URL=your-project-url
+   set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   set VITE_SUPABASE_STORAGE_BUCKET=image
+   ```
+3. Run the uploader:
+   ```bash
+   node scripts/bulkUploadDestinations.mjs
+   ```
+
+The script uploads each file to `storage://<bucket>/destinations/...`, obtains the public URL, and upserts the destination row in Supabase. Edit `scripts/bulkUploadDestinations.mjs` if you need to tweak descriptions, base prices, or the list of files.
+
 ## Adding shadcn/ui Components
 
 To add shadcn/ui components, use the CLI:

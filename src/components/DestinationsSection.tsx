@@ -14,7 +14,7 @@ export default function DestinationsSection({
   return (
     <section className="relative bg-slate-950">
       {/* soft gradient + glow */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/70 to-slate-950" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900/70 to-slate-950" />
       <div className="pointer-events-none absolute -top-40 right-0 h-64 w-64 rounded-full bg-sky-500/20 blur-3xl" />
 
       <div className="relative container mx-auto px-4 sm:px-6 md:px-8 py-12 sm:py-16 md:py-20 lg:py-24">

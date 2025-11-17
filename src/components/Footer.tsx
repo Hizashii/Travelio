@@ -5,35 +5,32 @@ import { useCurrency, currencies } from '../contexts/CurrencyContext'
 export default function Footer() {
   const { selectedCurrency, setSelectedCurrency } = useCurrency()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
   return (
-    <footer className="bg-slate-950 border-t border-white/10">
-      <div className="container mx-auto px-4 sm:px-6 md:px-4 py-8 sm:py-10 md:py-12">
-        {/* Currency Dropdown Section */}
+    <footer className="bg-slate-950 border-t border-white/10 text-center">
+      <div className="container mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-12 flex flex-col items-center gap-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-8"
         >
-          <div className="flex items-center justify-center gap-4">
-            <span className="text-sm font-medium text-slate-300">Currency:</span>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-slate-300">
+            <span>Currency</span>
             <div className="relative">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-background border border-input hover:bg-accent transition-colors min-w-[200px] justify-between"
+                className="flex items-center gap-2 rounded-full border border-white/15 bg-slate-900/70 px-3 py-1.5 text-xs font-semibold text-white"
               >
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-lg">{selectedCurrency.symbol}</span>
-                  <span className="text-sm font-semibold">{selectedCurrency.code}</span>
-                        <span className="text-xs text-slate-400">({selectedCurrency.name})</span>
-                </div>
+                <span>{selectedCurrency.symbol}</span>
+                <span>{selectedCurrency.code}</span>
+                <span className="text-[11px] text-slate-400">({selectedCurrency.name})</span>
                 <motion.svg
                   animate={{ rotate: isDropdownOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
-                        className="w-4 h-4 text-slate-300"
+                  className="w-3.5 h-3.5 text-slate-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -44,29 +41,26 @@ export default function Footer() {
 
               {isDropdownOpen && (
                 <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setIsDropdownOpen(false)}
-                  />
+                  <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)} />
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 mt-2 w-[300px] max-h-[400px] overflow-y-auto bg-slate-900 border border-white/10 rounded-lg shadow-lg z-20"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[260px] max-h-[320px] overflow-y-auto bg-slate-900 border border-white/10 rounded-2xl shadow-xl z-20"
                   >
                     <div className="p-2">
                       {currencies.map((currency) => (
                         <motion.button
                           key={currency.code}
-                          whileHover={{ scale: 1.02, x: 4 }}
+                          whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => {
                             setSelectedCurrency(currency)
                             setIsDropdownOpen(false)
                           }}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-left ${
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl transition-colors text-left ${
                             selectedCurrency.code === currency.code
-                              ? 'bg-blue-500/20 text-blue-300'
+                              ? 'bg-sky-500/20 text-sky-200'
                               : 'hover:bg-slate-800 text-white'
                           }`}
                         >
@@ -90,44 +84,43 @@ export default function Footer() {
           </div>
         </motion.div>
 
-        {/* Footer Links */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="border-t border-white/10 pt-8"
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="w-full border-t border-white/10 pt-8"
         >
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8 justify-items-center">
             <div>
-              <h4 className="font-semibold mb-4 text-white">Company</h4>
+              <h4 className="font-semibold mb-3 text-white">Company</h4>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Press</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#about" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#careers" className="hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#press" className="hover:text-white transition-colors">Press</a></li>
+                <li><a href="#blog" className="hover:text-white transition-colors">Blog</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-white">Support</h4>
+              <h4 className="font-semibold mb-3 text-white">Support</h4>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Safety</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Accessibility</a></li>
+                <li><a href="#help" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#contact" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#safety" className="hover:text-white transition-colors">Safety</a></li>
+                <li><a href="#accessibility" className="hover:text-white transition-colors">Accessibility</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-white">Legal</h4>
+              <h4 className="font-semibold mb-3 text-white">Legal</h4>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li><a href="#" className="hover:text-white transition-colors">Terms & Conditions</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Disclaimer</a></li>
+                <li><a href="#terms" className="hover:text-white transition-colors">Terms & Conditions</a></li>
+                <li><a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#cookies" className="hover:text-white transition-colors">Cookie Policy</a></li>
+                <li><a href="#disclaimer" className="hover:text-white transition-colors">Disclaimer</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-white">Connect</h4>
+              <h4 className="font-semibold mb-3 text-white">Connect</h4>
               <ul className="space-y-2 text-sm text-slate-300">
                 <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
@@ -137,7 +130,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Copyright */}
           <div className="border-t border-white/10 pt-6 text-center text-sm text-slate-400">
             <p>&copy; {new Date().getFullYear()} Travelio. All rights reserved.</p>
           </div>

@@ -25,7 +25,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="absolute top-0 left-0 right-0 z-50 w-full"
     >
-       <div className="w-full flex h-16 sm:h-18 md:h-20 items-center justify-between px-3 sm:px-4 md:px-6">
+       <div className="w-full max-w-6xl mx-auto flex h-16 sm:h-18 md:h-20 items-center justify-between px-4 sm:px-6 md:px-8">
          {/* Logo */}
          <motion.button
            type="button"
@@ -99,22 +99,6 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               />
             </svg>
           </motion.button>
-
-          {/* Account / Sign In */}
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="text-white text-sm font-medium transition-opacity hover:opacity-80 relative"
-          >
-            Account
-            <motion.div
-              className="absolute bottom-0 left-0 h-0.5 bg-white"
-              initial={{ width: 0 }}
-              whileHover={{ width: '100%' }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.button>
         </div>
 
         {/* Mobile menu toggle */}
@@ -144,7 +128,6 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           </motion.svg>
         </motion.button>
 
-        {/* Mobile: Search and Account */}
         <div className="md:hidden flex items-center gap-3">
           <motion.button
             type="button"
@@ -167,12 +150,6 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               />
             </svg>
           </motion.button>
-          <button
-            type="button"
-            className="text-white text-sm font-medium"
-          >
-            Account
-          </button>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
+import Footer from './Footer'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+      <div className="container mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-12 sm:pb-16 md:pb-20">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -261,6 +262,7 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

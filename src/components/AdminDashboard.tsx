@@ -4,6 +4,7 @@ import { Destination } from '../types'
 import { updateDestination, deleteDestination, fetchDestinations } from '../services/destinations'
 import { supabase } from '../lib/supabase'
 import { logoutAdmin, getAdminUsername } from '../services/auth'
+import { uploadDestinationImage } from '../services/storage'
 
 interface AdminDashboardProps {
   onDestinationAdded?: () => void
@@ -16,6 +17,8 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [formData, setFormData] = useState({
     id: '',
     name: '',
@@ -59,8 +62,10 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
     setSuccess(null)
 
     // Validation
-    if (!formData.id || !formData.name || !formData.country || !formData.image || !formData.description || !formData.basePrice) {
-      setError('Please fill in all required fields')
+    const hasImage = Boolean(formData.image) || Boolean(imageFile)
+
+    if (!formData.id || !formData.name || !formData.country || !hasImage || !formData.description || !formData.basePrice) {
+      setError('Please fill in all required fields (image URL or upload required)')
       return
     }
 
@@ -72,10 +77,17 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
 
     try {
       setLoading(true)
+      let imageUrl = formData.image
+
+      if (imageFile) {
+        setIsUploadingImage(true)
+        imageUrl = await uploadDestinationImage(imageFile)
+      }
+
       const destinationData: Omit<Destination, 'id'> = {
         name: formData.name,
         country: formData.country,
-        image: formData.image,
+        image: imageUrl,
         description: formData.description,
         basePrice: basePrice,
         currency: formData.currency,
@@ -115,6 +127,7 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
         currency: 'USD',
       })
       setIsEditing(null)
+      setImageFile(null)
       
       // Reload destinations
       await loadDestinations()
@@ -131,6 +144,7 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
       console.error(err)
     } finally {
       setLoading(false)
+      setIsUploadingImage(false)
     }
   }
 
@@ -145,6 +159,7 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
       currency: destination.currency,
     })
     setIsEditing(destination.id)
+    setImageFile(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -182,6 +197,7 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
     })
     setIsEditing(null)
     setError(null)
+    setImageFile(null)
   }
 
   return (
@@ -192,24 +208,34 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
               <p className="text-muted-foreground">
                 Manage travel destinations • Logged in as: <span className="font-semibold text-foreground">{getAdminUsername() || 'Admin'}</span>
               </p>
             </div>
-            <motion.button
-              onClick={() => {
-                logoutAdmin()
-                if (onLogout) onLogout()
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700"
-            >
-              Logout
-            </motion.button>
+            <div className="flex items-center gap-3">
+              <motion.button
+                onClick={() => window.open('/', '_self')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 rounded-lg border border-input bg-background text-sm font-medium hover:bg-muted"
+              >
+                View traveler site
+              </motion.button>
+              <motion.button
+                onClick={() => {
+                  logoutAdmin()
+                  if (onLogout) onLogout()
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700"
+              >
+                Logout
+              </motion.button>
+            </div>
           </div>
         </motion.div>
 
@@ -297,9 +323,32 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
                   value={formData.image}
                   onChange={handleInputChange}
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  required
                   placeholder="/japan.jpg"
                 />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block mb-2 text-sm font-medium">Upload Image (optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  className="w-full rounded-md border border-dashed border-input bg-background px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-blue-700 hover:file:bg-blue-100"
+                />
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Uploading a file will override the image URL above.
+                </p>
+                {imageFile ? (
+                  <p className="mt-1 text-sm text-foreground">
+                    Selected file: {imageFile.name}
+                  </p>
+                ) : (
+                  formData.image && (
+                    <p className="mt-1 text-sm text-muted-foreground truncate">
+                      Current image: {formData.image}
+                    </p>
+                  )
+                )}
               </div>
 
               <div>
@@ -349,12 +398,18 @@ export default function AdminDashboard({ onDestinationAdded, onLogout }: AdminDa
             <div className="flex gap-4">
               <motion.button
                 type="submit"
-                disabled={loading}
-                whileHover={{ scale: loading ? 1 : 1.02 }}
-                whileTap={{ scale: loading ? 1 : 0.98 }}
+                disabled={loading || isUploadingImage}
+                whileHover={{ scale: loading || isUploadingImage ? 1 : 1.02 }}
+                whileTap={{ scale: loading || isUploadingImage ? 1 : 0.98 }}
                 className="flex-1 rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Saving...' : isEditing ? 'Update Destination' : 'Add Destination'}
+                {loading
+                  ? 'Saving...'
+                  : isUploadingImage
+                    ? 'Uploading image...'
+                    : isEditing
+                      ? 'Update Destination'
+                      : 'Add Destination'}
               </motion.button>
 
               {isEditing && (
